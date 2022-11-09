@@ -119,4 +119,3 @@ def hb_glass_mat(
         mat.display_name = _name
 
     return mat
-# if it works it works dont let the folks say you can't when you are actively doing the things
