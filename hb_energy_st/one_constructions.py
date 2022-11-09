@@ -22,7 +22,7 @@ def hb_apply_construction_set(_rooms, _constr_set):
         new_rooms.append(new_room)
     return new_rooms
 
-# * Copied from grasshopper pre-testing if it works
+#! Copied from grasshopper POST-testing if it works, AFTER DEBUGGING A COUPLE TIMES!!
 
 
 def hb_opaque_mat(_name, _thickness, _cond, _density,
@@ -32,12 +32,14 @@ def hb_opaque_mat(_name, _thickness, _cond, _density,
     _roughness_ = 'MediumRough' if _roughness_ is None else _roughness_
     _therm_absp_ = 0.9 if _therm_absp_ is None else _therm_absp_
     _sol_absp_ = 0.7 if _sol_absp_ is None else _sol_absp_
-    name = clean_and_id_ep_string('OpaqueMaterial') if _name_ is None else \
-        clean_ep_string(_name_)
+    name = clean_and_id_ep_string('OpaqueMaterial') if _name is None else \
+        clean_ep_string(_name)
 
     # create the material
     mat = EnergyMaterial(
-        name, _thickness, _conductivity, _density, _spec_heat, _roughness_,
+        name, _thickness, _cond, _density, _spec_heat, _roughness_,
         _therm_absp_, _sol_absp_, _vis_absp_)
-    if _name_ is not None:
-        mat.display_name = _name_
+    if _name is not None:
+        mat.display_name = _name
+
+    return mat
