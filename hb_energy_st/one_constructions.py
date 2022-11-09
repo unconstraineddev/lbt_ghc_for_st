@@ -3,7 +3,7 @@ from honeybee.room import Room
 from honeybee_energy.lib.constructionsets import construction_set_by_identifier
 
 
-def hb_apply_construction_set(_rooms, _constr_set) -> list:
+def hb_apply_construction_set(_rooms, _constr_set):
     """_summary_
 
     Args:
@@ -13,7 +13,9 @@ def hb_apply_construction_set(_rooms, _constr_set) -> list:
     Returns:
         list: _description_
     """
+    new_rooms = []
     for rm in _rooms:
-        rm.properties.energy.construction_set = _constr_set
-
-    return _rooms
+        new_room = rm.duplicate()
+        new_room.properties.energy.construction_set = _constr_set
+        new_rooms.append(new_room)
+    return new_rooms
