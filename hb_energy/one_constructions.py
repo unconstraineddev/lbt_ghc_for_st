@@ -17,6 +17,8 @@ from honeybee_energy.material.glazing import EnergyWindowMaterialGlazing
 
 from .utils import is_exterior_wall
 
+from typing import List
+
 
 def hb_apply_construction_set(_rooms, _constr_set):
 
@@ -26,55 +28,6 @@ def hb_apply_construction_set(_rooms, _constr_set):
         new_room.properties.energy.construction_set = _constr_set
         new_rooms.append(new_room)
     return new_rooms
-
-
-def hb_apply_window_constr(_hb_objs, _window_constr):
-
-    new_rooms = [obj.duplicate() for obj in _rooms]
-
-    for i, constr in enumerate(_constr):
-        if isinstance(constr, str):
-            _constr[i] = window_construction_by_identifier(constr)
-
-    # error message for unrecognized object
-    error_msg = 'Input _hb_objs must be a Room, Face, Aperture, or Door. Not {}.'
-
-    # assign the constructions
-    if len(_constr) == 1:  # assign indiscriminately, even if it's a horizontal object
-        for obj in hb_objs:
-            if isinstance(obj, (Aperture, Door)):
-                obj.properties.energy.construction = _constr[0]
-            elif isinstance(obj, Face):
-                for ap in obj.apertures:
-                    ap.properties.energy.construction = _constr[0]
-            elif isinstance(obj, Room):
-                for face in obj.faces:
-                    if is_exterior_wall(face):
-                        for ap in face.apertures:
-                            ap.properties.energy.construction = _constr[0]
-            else:
-                raise TypeError(error_msg.format(type(obj)))
-    else:  # assign constructions only to non-horizontal objects based on cardinal direction
-        angles = angles_from_num_orient(len(_constr))
-        for obj in hb_objs:
-            if isinstance(obj, (Aperture, Door)):
-                orient_i = face_orient_index(obj, angles)
-                if orient_i is not None:
-                    obj.properties.energy.construction = _constr[orient_i]
-            elif isinstance(obj, Face):
-                orient_i = face_orient_index(obj, angles)
-                if orient_i is not None:
-                    for ap in obj.apertures:
-                        ap.properties.energy.construction = _constr[orient_i]
-            elif isinstance(obj, Room):
-                for face in obj.faces:
-                    if is_exterior_wall(face):
-                        orient_i = face_orient_index(face, angles)
-                        if orient_i is not None:
-                            for ap in face.apertures:
-                                ap.properties.energy.construction = _constr[orient_i]
-            else:
-                raise TypeError(error_msg.format(type(obj)))
 
 
 def hb_opaque_mat(_name, _thickness, _cond, _density,
